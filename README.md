@@ -138,8 +138,8 @@ Results are written to a CSV file with the following columns:
 
 ## Credits
 
-- Original [Boromir](https://github.com/skyg4mb/Persistence_Boromir) concept by [@skyg4mb](https://github.com/skyg4mb) and [@jupyterjones](https://github.com/jupyterj0nes)
-- Rust rewrite by [AI3xGP](https://github.com/AI3xGP)
+- Original [Boromir](https://github.com/skyg4mb/Persistence_Boromir) concept and Rust rewrite by [@AI3xGP](https://github.com/AI3xGP) (formerly @skyg4mb)
+- Co-author of Boromir: [@jupyterj0nes](https://github.com/jupyterj0nes)
 - Inspired by [Persistence Sniper](https://github.com/last-byte/PersistenceSniper)
 
 ---
