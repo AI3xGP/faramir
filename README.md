@@ -2,7 +2,7 @@
 
 > *"The younger brother, wiser and swifter."*
 
-Faramir is the evolution of [Boromir](https://github.com/skyg4mb/Persistence_Boromir) — a forensic tool designed to extract and timeline Windows persistence artifacts from offline registry hives. Rewritten from the ground up in **Rust** at the request of [@jupyterj0nes](https://github.com/jupyterj0nes), Faramir inherits all of Boromir's detection power while delivering native-speed performance, a single self-contained binary, and memory-safe parsing of registry hives with no runtime dependencies.
+(VibeCoding) Faramir is the evolution of [Boromir](https://github.com/skyg4mb/Persistence_Boromir) — a forensic tool designed to extract and timeline Windows persistence artifacts from offline registry hives. Rewritten from the ground up in **Rust** at the request of [@jupyterj0nes](https://github.com/jupyterj0nes), Faramir inherits all of Boromir's detection power while delivering native-speed performance, a single self-contained binary, and memory-safe parsing of registry hives with no runtime dependencies.
 
 If Boromir gave analysts a way to hunt persistence, Faramir gives them a faster, sharper blade.
 
