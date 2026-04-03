@@ -6,7 +6,10 @@ use std::path::{Path, PathBuf};
 use anyhow::Result;
 use chrono::Utc;
 use clap::{Parser, ValueEnum};
-use nt_hive2::{Hive, HiveParseMode, RegistryValue, SubPath};
+use nt_hive2::{
+    transactionlog::TransactionLog, BaseBlock, ContainsHive, DirtyHive, Hive, HiveParseMode,
+    RegistryValue, SubPath,
+};
 use walkdir::WalkDir;
 
 const FORMAT_DATE: &str = "%Y-%m-%d %H:%M:%S%.3f";
@@ -81,10 +84,52 @@ struct Args {
 
 type HiveFile = Hive<BufReader<File>, nt_hive2::CleanHive>;
 
+fn log_path(hive_path: &Path, suffix: &str) -> PathBuf {
+    let mut s = hive_path.as_os_str().to_owned();
+    s.push(suffix);
+    PathBuf::from(s)
+}
+
 fn open_hive(path: &Path) -> Option<HiveFile> {
     let file = File::open(path).ok()?;
     let reader = BufReader::new(file);
-    Hive::new(reader, HiveParseMode::NormalWithBaseBlock).ok()
+    let hive: Hive<BufReader<File>, DirtyHive> =
+        Hive::new(reader, HiveParseMode::NormalWithBaseBlock).ok()?;
+
+    let is_dirty = hive.base_block().map(|bb| bb.is_dirty()).unwrap_or(false);
+
+    if !is_dirty {
+        return Some(hive.treat_hive_as_clean());
+    }
+
+    println!("\t  [!] Dirty hive detected, applying transaction logs...");
+
+    let log1 = File::open(log_path(path, ".LOG1"))
+        .ok()
+        .and_then(|f| TransactionLog::try_from(f).ok());
+    let log2 = File::open(log_path(path, ".LOG2"))
+        .ok()
+        .and_then(|f| TransactionLog::try_from(f).ok());
+
+    match (log1, log2) {
+        (Some(l1), Some(l2)) => {
+            println!("\t    -> Applying LOG1 and LOG2");
+            let h = hive.with_transaction_log(l1).ok()?.with_transaction_log(l2).ok()?;
+            Some(h.apply_logs())
+        }
+        (Some(l1), None) => {
+            println!("\t    -> Applying LOG1");
+            Some(hive.with_transaction_log(l1).ok()?.apply_logs())
+        }
+        (None, Some(l2)) => {
+            println!("\t    -> Applying LOG2");
+            Some(hive.with_transaction_log(l2).ok()?.apply_logs())
+        }
+        (None, None) => {
+            println!("\t    [!] No transaction logs found, proceeding with dirty state");
+            Some(hive.treat_hive_as_clean())
+        }
+    }
 }
 
 fn fmt_ts(dt: &chrono::DateTime<Utc>) -> String {
