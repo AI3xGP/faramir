@@ -128,7 +128,6 @@ Results are written to a CSV file with the following columns:
 |---|---|
 | `timestamp` | Last write time of the registry key |
 | `technique` | Name of the detection technique |
-| `classification` | MITRE ATT&CK ID or Hexacorn reference |
 | `path` | Full path to the hive file |
 | `value` | Suspicious value found |
 | `access_gained` | Likely access level obtained |
