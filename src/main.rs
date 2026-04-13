@@ -23,7 +23,6 @@ struct Persistence {
     path: String,
     value: String,
     access_gained: String,
-    reference: String,
 }
 
 // ─── CLI ─────────────────────────────────────────────────────────────────────
@@ -194,7 +193,6 @@ fn run_key_entries(
     hives: &[PathBuf],
     key_paths: &[(&str, &str)], // (path, access_gained)
     technique: &str,
-    reference: &str,
 ) -> Vec<Persistence> {
     let mut result = Vec::new();
     for hive_path in hives {
@@ -211,7 +209,6 @@ fn run_key_entries(
                                 path: hive_path.to_string_lossy().to_string(),
                                 access_gained: access.to_string(),
                                 technique: technique.to_string(),
-                                reference: reference.to_string(),
                                 value: s.clone(),
                             })
                         }
@@ -233,7 +230,6 @@ fn get_run(hives: &[PathBuf]) -> Vec<Persistence> {
             (r"Microsoft\Windows\CurrentVersion\Run", "System"),
         ],
         "Registry Run Key",
-        "https://attack.mitre.org/techniques/T1547/001/",
     )
 }
 
@@ -246,7 +242,6 @@ fn get_runonce(hives: &[PathBuf]) -> Vec<Persistence> {
             (r"Microsoft\Windows\CurrentVersion\RunOnce", "System"),
         ],
         "Registry RunOnce Key",
-        "https://attack.mitre.org/techniques/T1547/001/",
     )
 }
 
@@ -259,7 +254,6 @@ fn get_runex(hives: &[PathBuf]) -> Vec<Persistence> {
             (r"Microsoft\Windows\CurrentVersion\RunEx", "System"),
         ],
         "Registry RunEx Key",
-        "https://attack.mitre.org/techniques/T1547/001/",
     )
 }
 
@@ -272,7 +266,6 @@ fn get_runonceex(hives: &[PathBuf]) -> Vec<Persistence> {
             (r"Microsoft\Windows\CurrentVersion\RunOnceEx", "System"),
         ],
         "Registry RunOnceEx Key",
-        "https://attack.mitre.org/techniques/T1547/001/",
     )
 }
 
@@ -300,7 +293,6 @@ fn get_image_file_execution_options(hives: &[PathBuf]) -> Vec<Persistence> {
                                         path: s.clone(),
                                         access_gained: "System/User".to_string(),
                                         technique: "Image file execution options".to_string(),
-                                        reference: "https://attack.mitre.org/techniques/T1546/012/".to_string(),
                                         value: s.clone(),
                                     });
                                 }
@@ -382,7 +374,6 @@ fn get_nldp_dll_override_path(hives: &[PathBuf]) -> Vec<Persistence> {
                         access_gained: String::new(),
                         technique: "Natural Language Development Platform 6 DLL Override Path"
                             .to_string(),
-                        reference: "https://www.hexacorn.com/blog/2018/12/30/beyond-good-ol-run-key-part-98/".to_string(),
                         value: val,
                     });
                 }
@@ -409,7 +400,6 @@ fn aedebug_entries(hives: &[PathBuf], key_path: &str) -> Vec<Persistence> {
                             path: path_str,
                             access_gained: "System".to_string(),
                             technique: "AEDebug Custom Debugger".to_string(),
-                            reference: "https://www.hexacorn.com/blog/2013/09/19/beyond-good-ol-run-key-part-4".to_string(),
                             value: "AeDebug".to_string(),
                         });
                     }
@@ -452,7 +442,6 @@ fn werfault_entries(hives: &[PathBuf], key_path: &str) -> Vec<Persistence> {
                             path: path_str,
                             access_gained: "System".to_string(),
                             technique: "Windows Error Reporting Debugger".to_string(),
-                            reference: "https://www.hexacorn.com/blog/2019/09/20/beyond-good-ol-run-key-part-116/".to_string(),
                             value: "werfaultDebuggger".to_string(),
                         });
                     }
@@ -500,7 +489,6 @@ fn get_cmd_autorun(hives: &[PathBuf]) -> Vec<Persistence> {
                                 path: path_str,
                                 access_gained: access.to_string(),
                                 technique: "Command Processor AutoRun key".to_string(),
-                                reference: "https://persistence-info.github.io/Data/cmdautorun.html".to_string(),
                                 value: "CmdAutoRun".to_string(),
                             })
                         } else {
@@ -519,7 +507,6 @@ fn single_value_key(
     key_paths: &[(&str, &str)],
     value_name: &str,
     technique: &str,
-    reference: &str,
     persistence_value: &str,
 ) -> Vec<Persistence> {
     let mut result = Vec::new();
@@ -538,7 +525,6 @@ fn single_value_key(
                             path: path_str,
                             access_gained: access.to_string(),
                             technique: technique.to_string(),
-                            reference: reference.to_string(),
                             value: persistence_value.to_string(),
                         }
                     })
@@ -559,7 +545,6 @@ fn get_explorer_load(hives: &[PathBuf]) -> Vec<Persistence> {
         ],
         "Load",
         "Explorer Load Property",
-        "https://persistence-info.github.io/Data/windowsload.html",
         "ExplorerLoad",
     )
 }
@@ -574,7 +559,6 @@ fn get_winlogon_userinit(hives: &[PathBuf]) -> Vec<Persistence> {
         ],
         "Userinit",
         "Winlogon Userinit Property",
-        "https://attack.mitre.org/techniques/T1547/004/",
         "WinLogonUserInit",
     )
 }
@@ -589,7 +573,6 @@ fn get_winlogon_shell(hives: &[PathBuf]) -> Vec<Persistence> {
         ],
         "Shell",
         "Winlogon shell Property",
-        "https://attack.mitre.org/techniques/T1547/004/",
         "WinLogonShell",
     )
 }
@@ -642,7 +625,6 @@ fn get_terminal_profile_start_on_user_login(settings_files: &[PathBuf]) -> Vec<P
                 path: file.to_string_lossy().to_string(),
                 access_gained: "User".to_string(),
                 technique: "Windows Terminal startOnUserLogin".to_string(),
-                reference: "https://twitter.com/nas_bench/status/1550836225652686848".to_string(),
                 value: commandline,
             });
         }
@@ -654,7 +636,6 @@ fn all_values_key(
     hives: &[PathBuf],
     key_paths: &[(&str, &str)],
     technique: &str,
-    reference: &str,
     persistence_value: &str,
 ) -> Vec<Persistence> {
     let mut result = Vec::new();
@@ -672,7 +653,6 @@ fn all_values_key(
                             path: path_str,
                             access_gained: access.to_string(),
                             technique: technique.to_string(),
-                            reference: reference.to_string(),
                             value: persistence_value.to_string(),
                         }
                     })
@@ -692,7 +672,6 @@ fn get_app_cert_dlls(hives: &[PathBuf]) -> Vec<Persistence> {
             (r"CurrentControlSet\Control\Session Manager\AppCertDlls", "System"),
         ],
         "AppCertDlls properties.",
-        "https://attack.mitre.org/techniques/T1546/009/",
         "AppCertDlls",
     )
 }
@@ -730,7 +709,6 @@ fn get_app_paths(hives: &[PathBuf]) -> Vec<Persistence> {
                                 path: path_str,
                                 access_gained: access.to_string(),
                                 technique: "App Paths".to_string(),
-                                reference: "https://www.hexacorn.com/blog/2013/01/19/beyond-good-ol-run-key-part-3/".to_string(),
                                 value: app.name().to_string(),
                             });
                         }
@@ -804,7 +782,6 @@ fn get_service_dlls(hives: &[PathBuf]) -> Vec<Persistence> {
                         path: d.clone(),
                         access_gained: "System".to_string(),
                         technique: "ServiceDll Hijacking".to_string(),
-                        reference: "https://www.hexacorn.com/blog/2013/09/19/beyond-good-ol-run-key-part-4/".to_string(),
                         value: "ServiceDlls".to_string(),
                     });
                 }
@@ -839,7 +816,6 @@ fn get_gp_extension_dlls(hives: &[PathBuf]) -> Vec<Persistence> {
                                         path: s.clone(),
                                         access_gained: access.to_string(),
                                         technique: "Group Policy Extension DLL".to_string(),
-                                        reference: "https://persistence-info.github.io/Data/gpoextension.html".to_string(),
                                         value: "Group Policy Extension DLL".to_string(),
                                     });
                                 }
@@ -864,7 +840,6 @@ fn get_winlogon_mpnotify(hives: &[PathBuf]) -> Vec<Persistence> {
         ],
         "mpnotify",
         "MPNotify",
-        "https://persistence-info.github.io/Data/mpnotify.html",
         "MPNotify",
     )
 }
@@ -878,7 +853,6 @@ fn get_chm_helper_dll(hives: &[PathBuf]) -> Vec<Persistence> {
             (r"Microsoft\HtmlHelp Author", "System"),
         ],
         "CHMHelperDll",
-        "https://www.hexacorn.com/blog/2018/04/22/beyond-good-ol-run-key-part-76/",
         "CHMHelperDll",
     )
 }
@@ -907,7 +881,6 @@ fn get_startup_programs(startup_files: &[PathBuf]) -> Vec<Persistence> {
                 path: program.to_string_lossy().to_string(),
                 access_gained: "User".to_string(),
                 technique: "Startup Folder".to_string(),
-                reference: "https://attack.mitre.org/techniques/T1547/001/".to_string(),
                 value: "Startup Folder".to_string(),
             }
         })
@@ -950,7 +923,6 @@ fn get_scheduled_tasks(hives: &[PathBuf], source_evidence: Option<&Path>) -> Vec
                                 path: path_val,
                                 access_gained: access.to_string(),
                                 technique: "Scheduled Task".to_string(),
-                                reference: "https://attack.mitre.org/techniques/T1053/005/".to_string(),
                                 value: "Scheduled Task".to_string(),
                             });
                         }
@@ -1021,7 +993,6 @@ fn get_scheduled_tasks(hives: &[PathBuf], source_evidence: Option<&Path>) -> Vec
                     path: path.to_string_lossy().to_string(),
                     access_gained: "System".to_string(),
                     technique: "Scheduled Task (XML)".to_string(),
-                    reference: "https://attack.mitre.org/techniques/T1053/005/".to_string(),
                     value: full_cmd,
                 });
             }
@@ -1083,7 +1054,6 @@ fn get_windows_services(hives: &[PathBuf]) -> Vec<Persistence> {
                             path: img,
                             access_gained: "System".to_string(),
                             technique: "Windows Service".to_string(),
-                            reference: "https://attack.mitre.org/techniques/T1543/003/".to_string(),
                             value: display_name,
                         });
                     }
@@ -1111,7 +1081,6 @@ fn get_user_init_mpr_script(hives: &[PathBuf]) -> Vec<Persistence> {
                             path: path_str,
                             access_gained: "User".to_string(),
                             technique: "User Init Mpr Logon Script".to_string(),
-                            reference: "https://attack.mitre.org/techniques/T1037/001/".to_string(),
                             value: s.clone(),
                         })
                     } else {
@@ -1145,7 +1114,6 @@ fn get_hhctrl_hijacking(hives: &[PathBuf]) -> Vec<Persistence> {
                                 path: path_str,
                                 access_gained: "System".to_string(),
                                 technique: "Hijacking of hhctrl.ocx".to_string(),
-                                reference: "https://www.hexacorn.com/blog/2018/04/23/beyond-good-ol-run-key-part-77/".to_string(),
                                 value: s.clone(),
                             })
                         } else {
@@ -1198,7 +1166,6 @@ fn get_app_init_dlls(hives: &[PathBuf]) -> Vec<Persistence> {
                                 path: key_path.to_string(),
                                 access_gained: "System".to_string(),
                                 technique: technique.to_string(),
-                                reference: "https://attack.mitre.org/techniques/T1546/010/".to_string(),
                                 value: s.clone(),
                             })
                         } else {
@@ -1248,7 +1215,6 @@ fn get_lsa_packages(hives: &[PathBuf]) -> Vec<Persistence> {
                                     path: r"SYSTEM\CurrentControlSet\Control\Lsa".to_string(),
                                     access_gained: access.to_string(),
                                     technique: format!("LSA {value_name}"),
-                                    reference: "https://attack.mitre.org/techniques/T1547/002/".to_string(),
                                     value: pkg.to_string(),
                                 });
                             }
@@ -1296,7 +1262,6 @@ fn get_boot_execute(hives: &[PathBuf]) -> Vec<Persistence> {
                             path: r"SYSTEM\CurrentControlSet\Control\Session Manager".to_string(),
                             access_gained: "System".to_string(),
                             technique: "Boot Execute".to_string(),
-                            reference: "https://attack.mitre.org/techniques/T1542/003/".to_string(),
                             value: entry.to_string(),
                         });
                     }
@@ -1342,7 +1307,6 @@ fn get_active_setup(hives: &[PathBuf]) -> Vec<Persistence> {
                                 path: format!(r"{key_path}\{}", comp.name()),
                                 access_gained: "System".to_string(),
                                 technique: "Active Setup StubPath".to_string(),
-                                reference: "https://www.hexacorn.com/blog/2014/07/16/beyond-good-ol-run-key-part-35/".to_string(),
                                 value: stub_path,
                             });
                         }
@@ -1373,7 +1337,6 @@ fn get_screensaver(hives: &[PathBuf]) -> Vec<Persistence> {
                             path: hive_path.to_string_lossy().to_string(),
                             access_gained: "User".to_string(),
                             technique: "Screensaver".to_string(),
-                            reference: "https://attack.mitre.org/techniques/T1546/002/".to_string(),
                             value: s,
                         })
                     } else { None }
@@ -1419,7 +1382,6 @@ fn get_silent_process_exit(hives: &[PathBuf]) -> Vec<Persistence> {
                                 path: format!(r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\{}", mon.name()),
                                 access_gained: "System".to_string(),
                                 technique: "Silent Process Exit Monitor".to_string(),
-                                reference: "https://www.hexacorn.com/blog/2019/09/19/silentprocessexit-registry-key-as-a-persistence-mechanism/".to_string(),
                                 value: proc,
                             });
                         }
@@ -1472,7 +1434,6 @@ fn get_com_hijacking(hives: &[PathBuf]) -> Vec<Persistence> {
                                 path: format!(r"Software\Classes\CLSID\{}\InprocServer32", clsid.name()),
                                 access_gained: "User".to_string(),
                                 technique: "COM Object Hijacking".to_string(),
-                                reference: "https://attack.mitre.org/techniques/T1546/015/".to_string(),
                                 value: dll_path,
                             });
                         }
@@ -1568,7 +1529,7 @@ fn get_startup_files(source: &Path) -> Vec<PathBuf> {
 fn write_csv(persistences: &[Persistence], prefix: &Path) -> Result<()> {
     let out_path = prefix.join("faramir.output.csv");
     let mut wtr = csv::Writer::from_path(&out_path)?;
-    wtr.write_record(["Timestamp", "Path", "AccessGained", "Technique", "Value", "Reference"])?;
+    wtr.write_record(["Timestamp", "Path", "AccessGained", "Technique", "Value"])?;
     for p in persistences {
         wtr.write_record([
             &p.timestamp,
@@ -1576,7 +1537,6 @@ fn write_csv(persistences: &[Persistence], prefix: &Path) -> Result<()> {
             &p.access_gained,
             &p.technique,
             &p.value,
-            &p.reference,
         ])?;
     }
     wtr.flush()?;
