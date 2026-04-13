@@ -93,7 +93,17 @@ fn open_hive(path: &Path) -> Option<HiveFile> {
     let file = File::open(path).ok()?;
     let reader = BufReader::new(file);
     let hive: Hive<BufReader<File>, DirtyHive> =
-        Hive::new(reader, HiveParseMode::NormalWithBaseBlock).ok()?;
+        match std::panic::catch_unwind(|| Hive::new(reader, HiveParseMode::NormalWithBaseBlock)) {
+            Ok(Ok(h)) => h,
+            Ok(Err(e)) => {
+                eprintln!("\x1b[31m[ERROR] Could not parse hive '{}': {e}\x1b[0m", path.display());
+                return None;
+            }
+            Err(_) => {
+                eprintln!("\x1b[31m[ERROR] Invalid or corrupt hive file '{}', skipping.\x1b[0m", path.display());
+                return None;
+            }
+        };
 
     let is_dirty = hive.base_block().map(|bb| bb.is_dirty()).unwrap_or(false);
 
